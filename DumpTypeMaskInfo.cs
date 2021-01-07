@@ -52,8 +52,14 @@ $TMI[$TMIC++ - 1] = "FxBrickAlwaysObjectType"	TAB intToBinary(67108864)	TAB	6710
 $TMI[$TMIC++ - 1] = "StaticRenderedObjectType"	TAB intToBinary(134217728)	TAB	134217728;
 $TMI[$TMIC++ - 1] = "DamagableItemObjectType"	TAB intToBinary(268435456)	TAB	268435456;
 $TMI[$TMIC++ - 1] = "PlayerObjectTypeHidden"    TAB intToBinary(536870912)    TAB 536870912; // 1<<29 // selective player collision dll
-function dumpTypeInfo(%dumpTypeMask, %client)
+function dumpTypeInfo(%dumpTypeMask, %client, %listAll, %displayName)
 {
+    if(!isObject(%client))
+	{
+		error(" FUNCTION REQUIRES CLIENT ARGUMENT dumpTypeInfo(%dumpTypeMask, %client, %listAll (BOOLEAN))");
+		return;
+	}
+
 	%message = "<just:left><tab:215>";
 	for(%I = 0; %I < $TMIC; %I++)
 	{
@@ -72,7 +78,7 @@ function dumpTypeInfo(%dumpTypeMask, %client)
 
         if(%listAll || (!%listAll && %dumpTypeMask & %typeMask))
         {
-            %displayMessage = %message @ "<br>" @ %typeName TAB "<color:AAAAAA>" @ %typeBinary SPC "<color:dd0000>" SPC %typeMask;
+            %displayMessage = %message @ %typeName TAB "<color:AAAAAA>" @ %typeBinary SPC "<color:dd0000>" SPC %typeMask;
             messageClient(%client, '', %displayMessage);
         }
 	}
@@ -80,7 +86,7 @@ function dumpTypeInfo(%dumpTypeMask, %client)
 	%binaryDump = intToBinary(%dumpTypeMask);
     %binaryDump = strReplace(%binaryDump, "1", "\c21<color:777777>");
 
-	%displayMessage = %message @ "<br>\c5" TAB "<color:777777>" @ %binaryDump SPC "<color:ffcc00>" SPC %dumpTypeMask;
+	%displayMessage = %message @ "\c5" @ %displayName TAB "<color:777777>" @ %binaryDump SPC "<color:ffcc00>" SPC %dumpTypeMask;
 	messageClient(%client, '', %displayMessage);
 }
 function SimObject::dumpTypeInfo(%object, %client, %listAll)
@@ -92,32 +98,5 @@ function SimObject::dumpTypeInfo(%object, %client, %listAll)
 	}
 
 	%dumpTypeMask = %object.getType();
-	%message = "<just:left><tab:215>";
-	for(%I = 0; %I < $TMIC; %I++)
-	{
-		%typeMask = $TMI[%I];
-		%typeName   = getField(%typeMask, 0);
-		%typeBinary = getField(%typeMask, 1);
-		%typeMask   = getField(%typeMask, 2);
-
-		if(%dumpTypeMask & %typeMask)
-		{
-			%typeBinary = strReplace(%typeBinary, "1", "\c31<color:AAAAAA>");
-			%typeName = "\c4" @ %typeName;
-		} else {
-            %typeName = "\c6" @ %typeName;
-		}
-
-        if(%listAll || (!%listAll && %dumpTypeMask & %typeMask))
-        {
-            %displayMessage = %message @ "<br>" @ %typeName TAB "<color:AAAAAA>" @ %typeBinary SPC "<color:dd0000>" SPC %typeMask;
-            messageClient(%client, '', %displayMessage);
-        }
-	}
-
-	%binaryDump = intToBinary(%dumpTypeMask);
-    %binaryDump = strReplace(%binaryDump, "1", "\c21<color:777777>");
-
-	%displayMessage = %message @ "<br>\c5" @ %object.getClassName() TAB "<color:777777>" @ %binaryDump SPC "<color:ffcc00>" SPC %dumpTypeMask;
-	messageClient(%client, '', %displayMessage);
+	dumpTypeInfo(%dumpTypeMask, %client, %listAll, %object.getClassName());
 }
