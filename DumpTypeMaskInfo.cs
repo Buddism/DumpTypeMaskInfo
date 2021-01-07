@@ -1,14 +1,14 @@
 function zeroStartLength(%value, %length)
 {
-    %len = strlen(%value);
-    if(%len >= %length)
-        return %value;
+	%len = strlen(%value);
+	if(%len >= %length)
+		return %value;
 
-    %dif = %length - %len;
-    for(%i = 0; %i < %dif; %i++)
-        %repeat = "0" @ %repeat;
+	%dif = %length - %len;
+	for(%i = 0; %i < %dif; %i++)
+		%repeat = "0" @ %repeat;
 
-    return %repeat @ %value;
+	return %repeat @ %value;
 }
 
 function intToBinary(%value)
@@ -54,7 +54,7 @@ $TMI[$TMIC++ - 1] = "DamagableItemObjectType"	TAB intToBinary(268435456)	TAB	268
 $TMI[$TMIC++ - 1] = "PlayerObjectTypeHidden"    TAB intToBinary(536870912)    TAB 536870912; // 1<<29 // selective player collision dll
 function dumpTypeInfo(%dumpTypeMask, %client, %listAll, %displayName)
 {
-    if(!isObject(%client))
+	if(!isObject(%client))
 	{
 		error(" FUNCTION REQUIRES CLIENT ARGUMENT dumpTypeInfo(%dumpTypeMask, %client, %listAll (BOOLEAN))");
 		return;
@@ -73,18 +73,18 @@ function dumpTypeInfo(%dumpTypeMask, %client, %listAll, %displayName)
 			%typeBinary = strReplace(%typeBinary, "1", "\c31<color:AAAAAA>");
 			%typeName = "\c4" @ %typeName;
 		} else {
-            %typeName = "\c6" @ %typeName;
+			%typeName = "\c6" @ %typeName;
 		}
 
-        if(%listAll || (!%listAll && %dumpTypeMask & %typeMask))
-        {
-            %displayMessage = %message @ %typeName TAB "<color:AAAAAA>" @ %typeBinary SPC "<color:dd0000>" SPC %typeMask;
-            messageClient(%client, '', %displayMessage);
-        }
+		if(%listAll || (!%listAll && %dumpTypeMask & %typeMask))
+		{
+			%displayMessage = %message @ %typeName TAB "<color:AAAAAA>" @ %typeBinary SPC "<color:dd0000>" SPC %typeMask;
+			messageClient(%client, '', %displayMessage);
+		}
 	}
 
 	%binaryDump = intToBinary(%dumpTypeMask);
-    %binaryDump = strReplace(%binaryDump, "1", "\c21<color:777777>");
+	%binaryDump = strReplace(%binaryDump, "1", "\c21<color:777777>");
 
 	%displayMessage = %message @ "\c5" @ %displayName TAB "<color:777777>" @ %binaryDump SPC "<color:ffcc00>" SPC %dumpTypeMask;
 	messageClient(%client, '', %displayMessage);
