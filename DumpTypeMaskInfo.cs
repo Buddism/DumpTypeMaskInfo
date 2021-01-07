@@ -1,4 +1,3 @@
-schedule(0, 0, talk, " %object.dumpTypeInfo(%client, %listAll (BOOLEAN))");
 function zeroStartLength(%value, %length)
 {
     %len = strlen(%value);
